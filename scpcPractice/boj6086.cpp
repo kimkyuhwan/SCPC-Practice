@@ -61,9 +61,11 @@ int executeDinic() {
 	int ret = 0;
 	while (makeLevelGraph()) {
 		fill(work.begin(), work.end(), 0);
-		int flow = dfs(StartVertex, INF);
-		if (!flow) break;
-		ret += flow;
+		while (1) {
+			int flow = dfs(StartVertex, INF);
+			if (!flow) break;
+			ret += flow;
+		}
 	}
 	return ret;
 }

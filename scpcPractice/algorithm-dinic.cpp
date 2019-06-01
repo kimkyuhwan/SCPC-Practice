@@ -25,7 +25,7 @@ bool makeLevelGraph() {
 	level[StartVertex] = 0;
 	while (!q.empty()) {
 		int here = q.front();
-		q.pop();
+		q.pop();	
 		for (Edge hereEdge : edges[here]) {
 			int there = hereEdge.v;
 			int capacity = hereEdge.cap;
@@ -61,9 +61,11 @@ int executeDinic() {
 	int ret = 0;
 	while (makeLevelGraph()) {
 		fill(work.begin(), work.end(), 0);
-		int flow = dfs(StartVertex, INF);
-		if (!flow) break;
-		ret += flow;
+		while (1) {
+			int flow = dfs(StartVertex, INF);
+			if (!flow) break;
+			ret += flow;
+		}
 	}
 	return ret;
 }
