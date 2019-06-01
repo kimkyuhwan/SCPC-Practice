@@ -9,8 +9,6 @@ int N;
 ll dp[110][5][5][5];
 
 
-// AGC ACG GAC
-// A C G T 
 ll solution(int pos, int b1, int b2, int b3) {
 	ll &ret = dp[pos][b1][b2][b3];
 	if (pos == N) {
