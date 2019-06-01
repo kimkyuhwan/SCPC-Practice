@@ -2,7 +2,6 @@
 #include <algorithm>
 using namespace std;
 int b, r, s;
-
 int main() {
 	scanf("%d", &b);
 	for (int testcase = 1; testcase <= b; testcase++) {
