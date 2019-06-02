@@ -10,7 +10,7 @@ vector<int> vec;
 map < string, vector<pair<int, int> > > mmap;
 int main() {
 	cin >> N;
-	for (int i = 1; i <= N; i++) {
+	for (int i = 1; i <= N; i++) {	
 		cin >> S >> P;
 		mmap[S].push_back(make_pair(P, i));
 	}
