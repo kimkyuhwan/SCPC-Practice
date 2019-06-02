@@ -10,7 +10,7 @@ struct Edge {
 	Edge(int _v, int _cap, int _rev) : v(_v), cap(_cap), rev(_rev) {}
 };
 
-vector<int> level, work;
+vector<int> dist, work;
 vector < vector<Edge> > edges;
 int startVertex, endVertex;
 int numberOfVertex, numberOfEdge;
@@ -20,23 +20,23 @@ void addEdge(int start, int end, int cap) {
 }
 
 bool makeLevelGraph() {
-	fill(level.begin(), level.end(), -1);
+	fill(dist.begin(), dist.end(), -1);
 	queue<int> q;
 	q.push(startVertex);
-	level[startVertex] = 0;
+	dist[startVertex] = 0;
 	while (!q.empty()) {
 		int here = q.front();
 		q.pop();
 		for (Edge edge : edges[here]) {
 			int there = edge.v;
 			int cap = edge.cap;
-			if (level[there] == -1 && cap > 0) {
-				level[there] = level[here] + 1;
+			if (dist[there] == -1 && cap > 0) {
+				dist[there] = dist[here] + 1;
 				q.push(there);
 			}
 		}
 	}
-	return level[endVertex] != -1;
+	return dist[endVertex] != -1;
 }
 
 int dfs(int here, int currentCap) {
@@ -44,7 +44,7 @@ int dfs(int here, int currentCap) {
 	for (int &i = work[here]; i < edges[here].size(); i++) {
 		int there = edges[here][i].v;
 		int thereCapacity = edges[here][i].cap;
-		if (level[here] + 1 == level[there] && thereCapacity > 0) {
+		if (dist[here] + 1 == dist[there] && thereCapacity > 0) {
 			int cap = dfs(there, min(currentCap, thereCapacity));
 			if (cap > 0) {
 				edges[here][i].cap -= cap;
@@ -72,7 +72,7 @@ int executeDinic() {
 }
 
 void makeEdges() {
-	level.resize(numberOfVertex);
+	dist.resize(numberOfVertex);
 	work.resize(numberOfVertex);
 	edges.resize(numberOfVertex);
 }

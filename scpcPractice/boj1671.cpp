@@ -16,29 +16,29 @@ struct Shark {
 
 vector<vector<Edge> > edges;
 vector<Shark> sharks;
-vector<int> level, work;
+vector<int> dist, work;
 int startVertex, endVertex;
 int numberOfVertex;
 int N;
 
 bool makeLevelGraph() {
 	queue<int> q;
-	fill(level.begin(), level.end(), -1);
+	fill(dist.begin(), dist.end(), -1);
 	q.push(startVertex);
-	level[startVertex] = 0;
+	dist[startVertex] = 0;
 	while (!q.empty()) {
 		int here = q.front();
 		q.pop();
 		for (Edge edge : edges[here]) {
 			int there = edge.v;
 			int thereCap = edge.cap;
-			if (level[there] == -1 && thereCap > 0) {
-				level[there] = level[here] + 1;
+			if (dist[there] == -1 && thereCap > 0) {
+				dist[there] = dist[here] + 1;
 				q.push(there);
 			}
 		}
 	}
-	return level[endVertex] != -1;
+	return dist[endVertex] != -1;
 }
 
 int dfs(int here, int currentCap) {
@@ -46,7 +46,7 @@ int dfs(int here, int currentCap) {
 	for (int &i = work[here]; i < edges[here].size(); i++) {
 		int there = edges[here][i].v;
 		int thereCap = edges[here][i].cap;
-		if (level[here] + 1 == level[there] && thereCap > 0) {
+		if (dist[here] + 1 == dist[there] && thereCap > 0) {
 			int cap = dfs(there, min(currentCap, thereCap));
 			if (cap > 0) {
 				edges[here][i].cap -= cap;
@@ -83,7 +83,7 @@ bool isPossibleEat(int a, int b) {
 
 void makeEdges() {
 	edges.resize(numberOfVertex);
-	level.resize(numberOfVertex);
+	dist.resize(numberOfVertex);
 	work.resize(numberOfVertex);
 }
 
