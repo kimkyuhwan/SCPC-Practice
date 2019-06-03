@@ -86,16 +86,20 @@ void input() {
 	makeEdges();
 	int w = 0, num;
 
-
+	int visited[1010] = {};
 	addEdge(startVertex, portalVertex, K);
 	for (int i = 0; i < N; i++) {
 		scanf("%d", &w);
 		addEdge(startVertex, i, 1);
-		addEdge(portalVertex, i, 1);
+
 		for (int j = 0; j < w; j++) {
 			scanf("%d", &num);
 			num--;
 			addEdge(i, num + N, 1);
+			if (!visited[num]) {
+				visited[num] = 1;
+				addEdge(portalVertex, num + N, 1);
+			}
 		}
 	}
 	for (int i = 0; i < M; i++) {
@@ -103,6 +107,7 @@ void input() {
 	}
 }
 int main() {
+	freopen("input.txt", "r", stdin);
 	input();
 	int ret = executeDinic();
 	printf("%d\n", ret);
