@@ -24,7 +24,6 @@ bool makeSPFA() {
 	while (!q.empty()) {
 		int here = q.front(); q.pop();
 		inQ[here] = false;
-		for (int i = 0; i < edges[here].size(); i++) {
 			int there = edges[here][i].v;
 			int thereCap = edges[here][i].cap;
 			int thereCost = edges[here][i].cost;
