@@ -1,19 +1,21 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define INF 1e9
+
 struct Edge {
 	int v, cap, rev;
 	Edge(int _v, int _cap, int _rev) : v(_v), cap(_cap), rev(_rev) {}
 };
 
-vector<vector <Edge> > edges;
+vector<vector<Edge> > edges;
 vector<int> level, work;
-
-int n, m;
-int s, e;
-int a, b;
-int cost;
 int startVertex, endVertex, numberOfVertex;
+
+
+void addEdge(int start, int end, int cap) {
+	edges[start].emplace_back(end, cap, edges[end].size());
+	edges[end].emplace_back(start, 0, edges[start].size()-1);
+}
 
 bool makeLevelGraph() {
 	queue<int> q;
@@ -23,9 +25,9 @@ bool makeLevelGraph() {
 	while (!q.empty()) {
 		int here = q.front();
 		q.pop();
-		for (int i = 0; i < edges[here].size(); i++) {
-			int there = edges[here][i].v;
-			int thereCap = edges[here][i].cap;
+		for (Edge edge : edges[here]) {
+			int there = edge.v;
+			int thereCap = edge.cap;
 			if (thereCap > 0 && level[there] == -1) {
 				level[there] = level[here] + 1;
 				q.push(there);
@@ -33,8 +35,8 @@ bool makeLevelGraph() {
 		}
 	}
 	return level[endVertex] != -1;
-
 }
+
 int dfs(int here, int currentCap) {
 	if (here == endVertex) return currentCap;
 	for (int &i = work[here]; i < edges[here].size(); i++) {
@@ -52,10 +54,8 @@ int dfs(int here, int currentCap) {
 	return 0;
 }
 
-int executeMCMF() {
-
+int executeDinic() {
 	int totalFlow = 0;
-	vector<int> sol;
 	while (makeLevelGraph()) {
 		fill(work.begin(), work.end(), 0);
 		while (1) {
@@ -67,60 +67,36 @@ int executeMCMF() {
 	return totalFlow;
 }
 
-void addEdge(int start, int end, int cap) {
-	edges[start].emplace_back(end, cap, edges[end].size());
-	edges[end].emplace_back(start, 0, edges[start].size() - 1);
-}
-
 void makeEdges() {
 	edges.resize(numberOfVertex);
 	level.resize(numberOfVertex);
 	work.resize(numberOfVertex);
 }
 
-
 void input() {
-	scanf("%d %d", &n, &m);
-	scanf("%d %d", &s, &e);
-	numberOfVertex = n * 2 + 2;
-	startVertex = s * 2;
-	endVertex = e * 2+1;
+	int N, P, a, b;
+	scanf("%d %d", &N, &P);
+
+	startVertex = 1 * 2;
+	endVertex = 2 * 2 + 1;
+	numberOfVertex = N * 2 + 2;
 	makeEdges();
-	for (int i = 1; i <= n; i++) {
-		scanf("%d", &cost);
-		addEdge(i * 2, i * 2 + 1, cost);
+
+	addEdge(1 * 2, 1 * 2 + 1, INF);
+	addEdge(2 * 2, 2 * 2 + 1, INF);
+	for (int i = 3; i <= N; i++) {
+		addEdge(i * 2, i * 2 + 1, 1);
 	}
-	for (int i = 0; i < m; i++) {
+	for (int i = 0; i < P; i++) {
 		scanf("%d %d", &a, &b);
-		addEdge(a * 2 + 1, b * 2, INF);
-		addEdge(b * 2 + 1, a * 2, INF);
-	}
-}
-void solution() {
-	vector<bool> check(n * 2 + 2);
-	queue<int> que;
-	que.push(s * 2);
-	check[s * 2] = true;
-	int tmp = 0;
-	while (!que.empty()) {
-		int here = que.front();
-		que.pop();
-		for (int i = 0; i < edges[here].size(); i++) {
-			int next = edges[here][i].v;
-			if (!check[next] && edges[here][i].cap) {
-				check[next] = true;
-				que.push(next);
-			}
-		}
-	}
-	for (int i = 1; i <= n; i ++) {
-		if (check[i*2] && !check[i*2 + 1])
-			cout << i << " ";
+		addEdge(a * 2 + 1, b * 2, 1);
+		addEdge(b * 2 + 1, a * 2, 1);
 	}
 }
 
 int main() {
 	input();
-	executeMCMF();
-	solution();
+	int ans = executeDinic();
+	printf("%d\n", ans);
+	return 0;
 }
