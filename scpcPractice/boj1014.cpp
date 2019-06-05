@@ -121,9 +121,7 @@ void input() {
 					int nx = j + dx[k];
 					if (isPossiblePosition(ny, nx) && mmap[ny][nx] == '.') {
 						int nextVertex = getVertexNumber(ny, nx);
-						if (j % 2 == 0) {
-							addEdge(curVertex * 2, nextVertex * 2 + 1, 1);
-						}
+						addEdge(curVertex * 2, nextVertex * 2 + 1, 1);
 					}
 
 				}
