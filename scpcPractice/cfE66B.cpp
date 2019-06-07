@@ -7,7 +7,7 @@ ll sol = 0;
 
 string str;
 vector<ll> vec;
-
+stack<int> st;
 ll getMulti() {
 	ll ret = 1;
 	for (int i = 0; i < vec.size(); i++) {
@@ -43,10 +43,12 @@ int main() {
 			if (N != 1) {
 				vec.push_back(N);
 			}
+			st.push(N);
 		}
 		else if (str == "end") {
-			if(!vec.empty())
+			if(!vec.empty() && st.top()!=1)
 				vec.pop_back();
+			st.pop();
 		}
 	}
 	if (isOver) {

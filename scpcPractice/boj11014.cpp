@@ -4,7 +4,7 @@ using namespace std;
 int testcase, ans;
 int N, M;
 int startVertex, endVertex, numberOfVertex;
-char mmap[12][12];
+char mmap[81][81];
 int dy[6] = { -1,0,0,-1,1,1 };
 int dx[6] = { -1,-1,1,1,-1,1 };
 struct Edge {
@@ -40,7 +40,7 @@ bool makeLevelGraph() {
 
 int dfs(int here, int currentCap) {
 	if (here == endVertex) return currentCap;
-	for (int i = 0; i < edges[here].size(); i++) {
+	for (int &i = work[here]; i < edges[here].size(); i++) {
 		int there = edges[here][i].v;
 		int thereCap = edges[here][i].cap;
 		if (thereCap > 0 && level[here] + 1 == level[there]) {
@@ -71,13 +71,13 @@ int executeDinic() {
 bool isPossiblePosition(int y, int x) {
 	return x >= 0 && x < M && y >= 0 && y < N;
 }
-int getVertexNumber(int y,int x) {
+int getVertexNumber(int y, int x) {
 	return y*M + x;
 }
 
 void addEdge(int start, int end, int cap) {
 	edges[start].emplace_back(end, cap, edges[end].size());
-	edges[end].emplace_back(start, 0, edges[start].size()-1);
+	edges[end].emplace_back(start, 0, edges[start].size() - 1);
 }
 
 void makeEdges() {
@@ -92,7 +92,7 @@ void input() {
 	memset(mmap, 0, sizeof(mmap));
 	ans = 0;
 	scanf("%d %d", &N, &M);
-	startVertex = N*M * 2;
+	startVertex = N*M;
 	endVertex = startVertex + 1;
 	numberOfVertex = endVertex + 1;
 	makeEdges();
@@ -113,7 +113,7 @@ void input() {
 	}
 
 	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j+=2) {
+		for (int j = 0; j < M; j += 2) {
 			if (mmap[i][j] == '.') {
 				int curVertex = getVertexNumber(i, j);
 				for (int k = 0; k < 6; k++) {
@@ -121,7 +121,7 @@ void input() {
 					int nx = j + dx[k];
 					if (isPossiblePosition(ny, nx) && mmap[ny][nx] == '.') {
 						int nextVertex = getVertexNumber(ny, nx);
-						addEdge(curVertex, nextVertex , 1);
+						addEdge(curVertex, nextVertex, 1);
 					}
 
 				}
