@@ -1,16 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define INF 1e9
 const int root = 0;
-const int NEXT_MAX = 4;
-const int NODE_MAX = 1000000;
-char mmap[256];
+const int NEXT_MAX = 3;
+const int NODE_MAX = 1010;
+
+int N, K;
 class Aho {
 private:
 	int cnt;
 	int next[NODE_MAX + 1][NEXT_MAX];
 	int fail[NODE_MAX + 1];
-	bool output[NODE_MAX + 1];
-	
+	int output[NODE_MAX + 1];
+	int	dp[1010][NODE_MAX+1];
+
 public:
 	Aho() {
 		init();
@@ -21,6 +24,7 @@ public:
 		memset(next, 0, sizeof(next));
 		memset(output, 0, sizeof(output));
 		memset(fail, 0, sizeof(fail));
+		memset(dp, -1, sizeof(dp));
 	}
 
 	bool canGo(int node, int nextIndex) {
@@ -29,10 +33,10 @@ public:
 
 	void insert(char *str, int node = root) {
 		if (*str == '\0') {
-			output[node] = true;
+			output[node]++;
 		}
 		else {
-			int nextIndex = mmap[*str];
+			int nextIndex = *str - 'A';
 			if (!canGo(node, nextIndex)) {
 				next[node][nextIndex] = cnt++;
 			}
@@ -64,7 +68,7 @@ public:
 					}
 				}
 				if (output[fail[nextNode]]) {
-					output[nextNode] = true;
+					output[nextNode]+=output[fail[nextNode]];
 				}
 				q.push(nextNode);
 			}
@@ -75,43 +79,62 @@ public:
 		int current = root;
 		int ret = 0;
 		for (int j = 0; str[j]; j++) {
-			int nextIndex = mmap[str[j]];
+			int nextIndex = str[j]-'A';
 			while (current != root && !canGo(current, nextIndex)) {
 				current = fail[current];
 			}
 			if (canGo(current, nextIndex)) {
 				current = next[current][nextIndex];
 			}
-			if (output[current]) {
-				ret++;
-			}
+			ret += output[current];
 		}
 		return ret;
 	}
-};
-Aho aho;
-int T, N, M;
-char str[1000010]="ATGGAT";
-char temp[110], dna[110];
-int main() {
-	mmap['A'] = 0, mmap['C'] = 1, mmap['G'] = 2, mmap['T'] = 3;
-	scanf("%d", &T);
-	while (T--) {
-		scanf(" %d %d", &N, &M);
-		scanf(" %s", str);
-		scanf(" %s", temp);
-		aho.insert(temp);
-		for (int i = 0; i < M; i++) {
-			for (int j = i + 2; j <= M; j++) {
-				int idx = 0;
-				reverse(temp + i, temp + j);
-				aho.insert(temp);
-				reverse(temp + i, temp + j);
+
+	int solution(int pos, int node) {
+		if (pos == K) return 0;
+		int &ret = dp[pos][node];
+		if (ret != -1) return ret;
+		ret = 0;
+		int nextNode = node;
+		int cnt=0;
+		int state = 0;
+		do {
+			for (int i = 0; i < 3; i++) {
+				if (state & (1<<i)) continue;
+				if (canGo(nextNode, i)) {
+					int thereNode = next[nextNode][i];
+					state |= (1 << i);
+					ret = max(ret, solution(pos + 1, thereNode) + output[thereNode]);
+				}
 			}
-		}
-		aho.makeFailure();
-		int ans = aho.isExist(str);
-		printf("%d\n", ans);
-		aho.init();
+			nextNode = fail[nextNode];
+			if (nextNode == root) {
+				cnt++;
+			}
+			if (state == ((1 << NEXT_MAX) - 1)) break;
+			if (cnt == 2) break;
+
+		} while (true);
+		return ret;
 	}
+
+};
+
+
+Aho aho;
+
+char str[21][21];
+int val[21];
+
+
+int main() {
+	scanf("%d %d", &N, &K);
+	for (int i = 1; i <= N; i++) {
+		scanf("%s", str[i]);
+		aho.insert(str[i]);
+	}
+	aho.makeFailure();
+	int ans = aho.solution(0, 0);
+	printf("%d\n", ans);
 }
