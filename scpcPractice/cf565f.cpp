@@ -64,7 +64,7 @@ int main() {
 		}
 		if (!card[3].empty()) {
 			if (cost[1].first < card[3][0]) {
-				cost[1].first = card[3][0];
+				cost[1].first = card[3][0];5
 				cost[1].second = card[3][0];
 			}
 		}
