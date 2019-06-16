@@ -1,22 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define MOD 1337377
+#define MOD 1000000009
 #define INF 1e9
 const int root = 0;
 const int NEXT_MAX = 26;
-const int NODE_MAX = 400010;
+const int NODE_MAX = 310;
 typedef long long ll;
-int N, K;
+int N, C, L;
 
-char str[300010];
 char temp[110];
 class Aho {
 private:
 	int cnt;
+	int num;
 	int next[NODE_MAX + 1][NEXT_MAX];
 	int fail[NODE_MAX + 1];
 	ll output[NODE_MAX + 1];
-	ll dp[300010];
+	ll dp[10][52][NODE_MAX][64];
 
 public:
 	Aho() {
@@ -25,9 +25,11 @@ public:
 
 	void init() {
 		cnt = 1;
+		num = 0;
 		memset(next, 0, sizeof(next));
 		memset(output, 0, sizeof(output));
 		memset(fail, 0, sizeof(fail));
+		memset(dp, -1, sizeof(dp));
 	}
 
 	bool canGo(int node, int nextIndex) {
@@ -36,7 +38,8 @@ public:
 
 	void insert(char *str, int node = root) {
 		if (*str == '\0') {
-			output[node]++;
+			output[node] = (1<<num);
+			num++;
 		}
 		else {
 			int nextIndex = *str - 'a';
@@ -69,57 +72,72 @@ public:
 						destNode = next[destNode][i];
 						fail[nextNode] = destNode;
 					}
+
+					if (output[fail[nextNode]]) {
+						output[nextNode] |= output[fail[nextNode]];
+					}
 				}
 				q.push(nextNode);
 			}
 		}
 	}
 
-	int isExist(char *str) {
-		int current = root;
+	int getDiffernce(int src, int dst) {
+		int state = (src ^ dst);
 		int ret = 0;
-		for (int j = 0; str[j]; j++) {
-			int nextIndex = str[j] - 'a';
-			while (current != root && !canGo(current, nextIndex)) {
-				current = fail[current];
+		state &= ~(src);
+		while (state) {
+			if (state % 2) {
+				ret++;
 			}
-			if (canGo(current, nextIndex)) {
-				current = next[current][nextIndex];
-			}
-			ret += output[current];
+			state >>= 1;
 		}
 		return ret;
 	}
 
-	ll solution(int node = root) {
-		int m = strlen(str);
-		dp[m] = 1;
-
-		for (int i = m - 1; i >= 0; --i) {
-			int t = root;
-			for (int j = i; j < m; ++j) {
-				t = next[t][str[j] - 'a'];
-				if (t == 0) break;
-				if (output[t]) dp[i] = (dp[i] + dp[j + 1]) % MOD;
-			}
-			dp[i] %= MOD;
+	ll solution(int remainC, int pos, int node,int state) {
+		if (remainC < 0) return 0;
+		if (pos == L) {
+			if (remainC > 0) return 0;
+			else if (remainC == 0) return 1;
 		}
-		return dp[0];
+		ll &ret = dp[remainC][pos][node][state];
+		if (ret != -1) return ret;
+		ret = 0; 
+		for (int i = 0; i < 26; i++) {
+			int temp = node;
+			while (true) {
+				int nextNode = next[temp][i];
+				if (nextNode) {
+					if (output[nextNode] && !((state & output[nextNode]) == output[nextNode])) {
+						ret = (ret + solution(remainC - getDiffernce(state, output[nextNode]), pos + 1, nextNode, state | output[nextNode])) % MOD;
+						break;
+					}
+					else {
+						ret = (ret + solution(remainC, pos + 1, nextNode, state)) % MOD;
+						break;
+					}
+				}
+				else if(temp==root){
+					ret = (ret + solution(remainC, pos + 1, root, state)) % MOD;
+					break;
+				}
+				temp = fail[temp];
+			}
+		}
+		return ret;
 	}
 
 };
 
 Aho aho;
-
 int main() {
-	scanf("%s", str);
-	scanf(" %d", &N);
+	scanf("%d %d %d", &N,&C,&L);
 	for (int i = 1; i <= N; i++) {
 		scanf(" %s", temp);
 		aho.insert(temp);
 	}
 	aho.makeFailure();
-	ll ans = aho.solution(0);
-
+	ll ans = aho.solution(C, 0, 0, 0);
 	printf("%lld\n", ans);
 }
