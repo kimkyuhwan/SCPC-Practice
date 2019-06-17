@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <random>
 using namespace std;
 typedef long long ll;
 #define MOD 19683
@@ -16,7 +17,6 @@ int dfs1(int py, int px, int cnt, int dir) {
 	int ny = py + dy[dir];
 	int nx = px + dx[dir];
 
-	
 	if (dir == 0) {
 		if (mmap[py][px] != mmap[ny][nx]) {
 			int ncnt = min(3, cnt + 1);
