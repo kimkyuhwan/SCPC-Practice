@@ -22,6 +22,7 @@ vector<vector<ll> > getGop(const vector<vector<ll> > &A, const vector<vector<ll>
 ll val;
 ll sol;
 vector<vector<ll> > ans;
+vector<ll> dp;
 int main() {
 	scanf("%lld %lld", &n, &k);
 	for (int i = 0; i < 32; i++) {
@@ -34,7 +35,7 @@ int main() {
 		}
 	}
 	for (int i = 1; i < 32; i++) {
-		A[i] = getGop(A[i - 1], A[i - 1]);
+		A[i] = getGop(A[i - 1], A[0]);
 	}
 	int cnt = 0;
 	for (int i = 0; i < n; i++) {
