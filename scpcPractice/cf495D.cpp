@@ -6,10 +6,6 @@ int n, m, maxx;
 int arr[1000010];
 ll psum[1000010];
 ll sum;
-bool isPossiblePosition(int y, int x) {
-	return y >= 1 && y <= n && x >= 1 && x <= m;
-}
-
 
 ll getSum(int y, int x) {
 	ll ret = 0;
@@ -36,16 +32,12 @@ int main() {
 			if (maxx < (n / 2 + m / 2)) {
 					continue;
 			}
-			
 			for (int yy = 1; yy < k; yy++) {
 				ll ssum = getSum(yy , k - yy);
 				if (ssum == sum) {
 					printf("%d %d\n", n, m);
 					printf("%d %d\n", yy, k - yy);
 					return 0;
-				}
-				if (n == m) {
-					ssum -= (n + m);
 				}
 			}
 		}
