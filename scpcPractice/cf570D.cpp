@@ -5,6 +5,8 @@ typedef long long ll;
 int q, n;
 ll val;
 int main() {
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
 	scanf("%d", &q);
 	while(q--){
 		map<ll, ll> mmap;
