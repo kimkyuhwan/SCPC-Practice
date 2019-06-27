@@ -4,6 +4,8 @@ typedef long long ll;
 int t;
 int n, m, maxx;
 int arr[1000010];
+int cnt[1000010];
+int tcnt[1000010];
 ll psum[1000010];
 ll sum;
 
@@ -21,6 +23,7 @@ int main() {
 		scanf("%d", &arr[i]);
 		maxx = max(maxx, arr[i]);
 		sum += arr[i];
+		cnt[arr[i]]++;
 	}
 	for (int i = 1; i <= 1000000; i++) {
 		psum[i] = psum[i - 1] + i;
@@ -35,9 +38,25 @@ int main() {
 			for (int yy = 1; yy < k; yy++) {
 				ll ssum = getSum(yy , k - yy);
 				if (ssum == sum) {
-					printf("%d %d\n", n, m);
-					printf("%d %d\n", yy, k - yy);
-					return 0;
+					fill(tcnt, tcnt + maxx+1, 0);
+					for (int y = 1; y <= n; y++) {
+						for (int x = 1; x <= m; x++) {
+							int val = (abs(y - yy) + abs(x - (k - yy)));
+							tcnt[val]++;
+						}
+					}
+					bool isPossible = true;
+					for (int i = 0; i <= maxx; i++) {
+						if (tcnt[i] != cnt[i]) {
+							isPossible = false;
+							break;
+						}
+					}
+					if (isPossible) {
+						printf("%d %d\n", n, m);
+						printf("%d %d\n", yy, k - yy);
+						return 0;
+					}
 				}
 			}
 		}
