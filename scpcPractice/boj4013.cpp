@@ -36,7 +36,7 @@ void makeGraph() {
 			if (hereGroup == thereGroup) continue;
 			if (newEdge[hereGroup].find(thereGroup) == newEdge[hereGroup].end()) {
 				newEdge[hereGroup].insert(thereGroup);
-				outDegree[hereGroup]++;
+				outDegree[thereGroup]++;
 			}
 		}
 	}
@@ -44,27 +44,37 @@ void makeGraph() {
 
 int solution() {
 	int ret = 0;
-	priority_queue<pair<int, int> > pq;
+	queue<int> q;
 	vector<int> sccCost;
+	vector<bool> canGo(sccCnt + 1);
 	sccCost.resize(sccCnt + 1);
 	int startGroup = sccGroup[S];
 	sccCost[startGroup] = totalCost[startGroup];
-	pq.push({ sccCost[startGroup] , startGroup });
-	while (!pq.empty()) {
-		int hereCost = pq.top().first;
-		int here = pq.top().second;
-		pq.pop();
-		if (hereCost < sccCost[here]) continue;
+	canGo[startGroup] = true;
+	q.push(startGroup);
+	for (int i = 1; i <= sccCnt; i++) {
+		if (i == startGroup) continue;
+		if (outDegree[i] == 0) {
+			q.push(i);
+			sccCost[i] = totalCost[i];
+		}
+	}
+	while (!q.empty()) {
+		int here = q.front();
+		q.pop();
 		for (int thereGroup : newEdge[here]) {
-			int thereCost = hereCost + totalCost[thereGroup];
-			if (sccCost[thereGroup] < thereCost) {
-				sccCost[thereGroup] = thereCost;
-				pq.push({ thereCost,thereGroup });
+			if (canGo[here]) {
+				int thereCost = sccCost[here] + totalCost[thereGroup];
+				sccCost[thereGroup] = max(sccCost[thereGroup], thereCost);
+				canGo[thereGroup] = true;
+			}
+			if (--outDegree[thereGroup] == 0) {
+				q.push(thereGroup);
 			}
 		}
 	}
 	for (int i = 1; i <= sccCnt; i++) {
-		if (hasRest[i]) {
+		if (hasRest[i] && canGo[i]) {
 			ret = max(ret, sccCost[i]);
 		}
 	}
