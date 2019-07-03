@@ -10,7 +10,6 @@ void manacher() {
 	for (int i = 0; i < N; i++) {
 		if (r >= i) p[i] = min(r - i, p[c * 2 - i]); 
 		else p[i] = 0;
-
 		while (i + p [i] + 1 < N && i - p[i] - 1 >= 0 && arr[i + p[i] + 1] == arr[i - p[i] - 1]) p[i]++; 
 		if (i + p[i] > r) {
 			r = i + p[i];
