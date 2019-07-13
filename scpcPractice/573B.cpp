@@ -22,8 +22,8 @@ int main()
 		}
 	}
 	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (j < 7) {
+		for (int j = 0; j <= 8; j++) {
+			if (j <= 7) {
 				if (cnt[j][i] != 0 && cnt[j + 1][i] != 0 && cnt[j + 2][i] != 0) {
 					ans = 0;
 				}
