@@ -109,6 +109,6 @@ int main() {
 		}
 		sum[i] = accumulate(dp[i], dp[i] + n, 0ll) % mod;
 	}
-	vector<int> v(sum, sum + 300);
+	vector<int> v(sum,	sum + 300);
 	cout << linear_seq::guess_nth_term(v, m) << endl;
 }
