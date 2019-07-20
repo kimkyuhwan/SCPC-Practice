@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 const int MAXN = 200010;
-int sz[MAXN], kill[MAXN], ans;
+int sz[MAXN], cut[MAXN], ans;
 map<int, int> mp;
 int N, K;
 int a, b, w;
@@ -11,7 +11,7 @@ int getSize(int here, int parent) {
 	sz[here] = 1;
 	for (int i = 0; i < edges[here].size(); i++) {
 		int there = edges[here][i].first;
-		if (parent == there || kill[there]) continue;
+		if (parent == there || cut[there]) continue;
 		sz[here] += getSize(there, here);
 	}
 	return sz[here];
@@ -20,7 +20,7 @@ int getSize(int here, int parent) {
 int findCenter(int here, int parent, int cap) {
 	for (int i = 0; i < edges[here].size(); i++) {
 		int there = edges[here][i].first;
-		if (kill[there] || there == parent) continue;
+		if (cut[there] || there == parent) continue;
 		if (sz[there] > cap) return findCenter(there, here, cap);
 	}
 	return here;
@@ -35,7 +35,7 @@ void compute(int here, int parent, int dist, int depth) {
 	for (int i = 0; i < edges[here].size(); i++) {
 		int there = edges[here][i].first;
 		int weight = edges[here][i].second;
-		if (!kill[there] && there != parent) compute(there, here, dist + weight, depth + 1);
+		if (!cut[there] && there != parent) compute(there, here, dist + weight, depth + 1);
 	}
 }
 
@@ -51,7 +51,7 @@ void add(int here, int parent, int dist, int depth) {
 	for (int i = 0; i < edges[here].size(); i++) {
 		int there = edges[here][i].first;
 		int weight = edges[here][i].second;
-		if (kill[there] || there == parent) continue;
+		if (cut[there] || there == parent) continue;
 		add(there, here, dist + weight, depth + 1);
 	}
 }
@@ -59,19 +59,19 @@ void add(int here, int parent, int dist, int depth) {
 void solution(int here) {
 	int sz = getSize(here, -1)/2;
 	int center = findCenter(here, -1, sz);
-	kill[center] = 1;
+	cut[center] = 1;
 	mp.clear(); mp[0] = 0;
 	for (int i = 0; i < edges[center].size(); i++) {
 		int there = edges[center][i].first;
 		int weight = edges[center][i].second;
-		if (!kill[there]) {
+		if (!cut[there]) {
 			compute(there, center, weight, 1);
 			add(there, center, weight, 1);
 		}
 	}
 	for (int i = 0; i < edges[center].size(); i++) {
 		int there = edges[center][i].first;
-		if (!kill[there]) solution(there);
+		if (!cut[there]) solution(there);
 	}
 }
 int main()
