@@ -23,38 +23,44 @@ struct PST {
 	int nodeCnt;
 	int root[MAX_ROOT];
 	Node node[MAX_NODE];
+	int nInit;
 
 	PST() : Tn(0), nodeCnt(0) {
 		fill(root, root + MAX_ROOT, -1);
 		root[Tn++] = initialize(0, MAX_ST / 2);
+		nInit = nodeCnt;
+	}
+
+	void init() {
+		Tn = 1;
+		nodeCnt = nInit;
 	}
 
 	int initialize(int left, int right) {
 		Node &curr = node[nodeCnt] = Node(left, right, nodeCnt);
 		nodeCnt++;
-		if (left + 1 < right) {
+		if (left < right) {
 			int mid = (left + right) >> 1;
 			curr.lNum = initialize(left, mid);
-			curr.rNum = initialize(mid, right);
+			curr.rNum = initialize(mid+1, right);
 		}
 		return curr.nNum;
 	}
 	void addNode(int y, int val = 1) {
 		root[Tn] = addNode(node[root[Tn - 1]], y, val, 0, MAX_ST / 2);
 		Tn++;
-
 	}
 
 	int addNode(Node &shadow, int y, int val, int left, int right) {
-		if (right <= y || y < left) return shadow.nNum;
+		if (right < y || y < left) return shadow.nNum;
 		Node &curr = node[nodeCnt] = Node(left, right, nodeCnt);
 		nodeCnt++;
-		if (left + 1 == right) 
+		if (left == right)
 			curr.val = shadow.val + val;
 		else {
 			int mid = (left + right) >> 1;
 			curr.lNum = addNode(node[shadow.lNum], y, val, left, mid);
-			curr.rNum = addNode(node[shadow.rNum], y, val, mid, right);
+			curr.rNum = addNode(node[shadow.rNum], y, val, mid + 1, right);
 			curr.val = node[curr.lNum].val + node[curr.rNum].val;
 		}
 		return curr.nNum;
@@ -64,20 +70,20 @@ struct PST {
 		return sum(node[root[x]], s, e);
 	}
 	int sum(Node &curr, int s, int e) {
-		if (e <= curr.left || curr.right <= s) 
+		if (e < curr.left || curr.right < s)
 			return 0;
-		if (s <= curr.left && curr.right <= e) 
+		if (s <= curr.left && curr.right <= e)
 			return curr.val;
 		return sum(node[curr.lNum], s, e) + sum(node[curr.rNum], s, e);
 	}
 
-}*pst;
+}pst;
 
 
 int main() {
 	scanf("%d", &T);
 	while (T--) {
-		pst = new PST();
+		pst.init();
 		scanf("%d %d", &N, &M);
 		for (int i = 0; i < N; i++) {
 			scanf("%d %d", &x, &y);
@@ -92,18 +98,17 @@ int main() {
 			int xx = it->first;
 			xVal.push_back(xx);
 			for (int yy : it->second) {
-				pst->addNode(yy);
+				pst.addNode(yy);
 				psum.back()++;
 			}
 		}
-		
 		int ans = 0;
 		for (int i = 0; i < M; i++) {
 			scanf("%d %d %d %d", &l, &r, &b, &t);
 			int rr = upper_bound(xVal.begin(), xVal.end(), r) - xVal.begin();
 			int ll = lower_bound(xVal.begin(), xVal.end(), l) - xVal.begin();
-			ans += pst->sum(psum[rr-1], b, t+1);
-			ans -= pst->sum(psum[ll-1], b, t+1);
+			ans += pst.sum(psum[rr - 1], b, t );
+			ans -= pst.sum(psum[ll - 1], b, t );
 		}
 		printf("%d\n", ans);
 		xVal.clear();
