@@ -15,7 +15,7 @@ ll d[MAXN], dtime[MAXN], ans[MAXN];
 
 struct convex {
 	int sz;
-	int id
+	int id;
 };
 
 int main() {
@@ -31,7 +31,6 @@ int main() {
 		scanf("%lld %lld", &t, &s);
 		ele[i] = { t,s };	
 	}
-	dfs(1, 0);
 	for (int i = 2; i <= N; i++) {
 		printf("%lld\n", dtime[i]);
 	}

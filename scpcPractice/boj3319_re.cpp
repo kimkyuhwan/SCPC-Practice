@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define ll long long
+typedef long long ll;
 
 const int N = 1e5 + 15;
 
