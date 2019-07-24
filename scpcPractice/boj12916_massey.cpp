@@ -76,7 +76,7 @@ namespace linear_seq {
 			n >>= 1;
 		}
 		lint ret = 0;
-		for (int i = 0; i<m; i++) ret += 1ll * s[i] * dp[i] % mod;
+		for (int i = 0; i<m; i++) ret = (ret + 1ll * s[i] * dp[i]) % mod;
 		return ret % mod;
 	}
 	int guess_nth_term(vector<int> x, lint n) {

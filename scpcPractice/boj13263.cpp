@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-const int MAX = 100000;
+const int MAX = 100007;
 
 struct LinearFunc {
 	ll a, b;

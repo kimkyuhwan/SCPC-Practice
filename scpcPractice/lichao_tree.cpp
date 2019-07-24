@@ -4,8 +4,8 @@ using namespace std;
 typedef long long ll;
 typedef pair<ll, ll> Line;
 
-ll f(Line l, ll x) {
-	return l.first * x + l.second;
+ll f(Line l, ll x, ll time, ll currentCost) {
+	return l.first * x + l.second + time *currentCost;
 }
 
 struct Node {
