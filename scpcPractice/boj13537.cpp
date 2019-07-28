@@ -2,6 +2,8 @@
 using namespace std;
 int N, M, idx=1, A;
 vector<vector<int> > seg;
+vector<int> arr;
+
 int a, b, k;
 void insert(int node, int left, int right, int i, int val) {
 	if (!(left <= i && i <= right)) return;
@@ -11,6 +13,20 @@ void insert(int node, int left, int right, int i, int val) {
 		insert(node * 2, left, mid,i, val);
 		insert(node * 2 + 1, mid + 1,right,i, val);
 	}
+}
+
+void update(int node, int left, int right) {
+	if (left == right) {
+		seg[node].push_back(arr[left]);
+		return;
+	}
+	int l = node * 2;
+	int r = node * 2 + 1;
+	int mid = (left + right) >> 1;
+	update(l, left, mid);
+	update(r, mid + 1, right);
+	seg[node].resize(seg[l].size() + seg[r].size());
+	merge(seg[l].begin(), seg[l].end(), seg[r].begin(), seg[r].end(), seg[node].begin());
 }
 
 int query(int node, int left, int right, int start, int end, int val) {
@@ -29,10 +45,12 @@ int main() {
 		idx <<= 1;
 	}
 	seg.resize(idx * 2);
+	arr.resize(idx + 1);
 	for (int i = 1; i <= N; i++) {
-		scanf("%d", &A);
-		insert(1, 1, idx,i, A);
+		scanf("%d", &arr[i]);
 	}
+
+	updated(1, 1, idx);
 	for (int i = 1; i < seg.size(); i++) sort(seg[i].begin(), seg[i].end());
 	scanf("%d", &M);
 	for (int i = 0; i < M; i++) {

@@ -34,9 +34,12 @@ int main()
 	printf("%.20lf\n", PI);
 	PI = atan(1.0) * 4;
 	printf("%.20lf\n", PI);
+	PI = acos(-1.0);
+	printf("%.20lf\n", PI);
 	vec a(0, 1);
 	vec b(1, 0);
 	printf("%lf\n", tan(getAngle(a,b)));
 	printf("%lf\n", sqrt(3));
+	printf("%lf\n", cos(M_PI));
 	
 }
