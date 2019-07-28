@@ -41,7 +41,7 @@ struct vector2 {
 
 
 pair<vector2,vector2> makeVectors(vector2 &a, vector2 &b) {
-	return { a,b};
+	return {a,b};
 }
 vector2 pp[MAXN];
 vector2 nn[MAXN];

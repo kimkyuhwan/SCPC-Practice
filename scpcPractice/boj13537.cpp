@@ -3,17 +3,7 @@ using namespace std;
 int N, M, idx=1, A;
 vector<vector<int> > seg;
 vector<int> arr;
-
 int a, b, k;
-void insert(int node, int left, int right, int i, int val) {
-	if (!(left <= i && i <= right)) return;
-	seg[node].push_back(val);
-	if (left != right) {
-		int mid = (left + right) >> 1;
-		insert(node * 2, left, mid,i, val);
-		insert(node * 2 + 1, mid + 1,right,i, val);
-	}
-}
 
 void update(int node, int left, int right) {
 	if (left == right) {
@@ -49,8 +39,7 @@ int main() {
 	for (int i = 1; i <= N; i++) {
 		scanf("%d", &arr[i]);
 	}
-
-	updated(1, 1, idx);
+	update(1, 1, idx);
 	for (int i = 1; i < seg.size(); i++) sort(seg[i].begin(), seg[i].end());
 	scanf("%d", &M);
 	for (int i = 0; i < M; i++) {

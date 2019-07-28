@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef complex<double> comp;
+
 void fft(vector<comp> &a, int invert = 0) {
 	int n = (int)a.size();
 	int i, j, len;
@@ -20,12 +21,13 @@ void fft(vector<comp> &a, int invert = 0) {
 				comp u = a[i + j], v = a[i + j + len / 2] * w;
 				a[i + j] = u + v;
 				a[i + j + len / 2] = u - v;
-				w *= wlen;
+ 				w *= wlen;
 			}
 		}
 	}
 	if (invert) for (i = 0; i<n; i++) a[i] /= n;
 }
+
 vector<int> multiply(vector<int> a, vector<int> b) {
 	vector<int> res;
 	vector<comp> fa(a.begin(), a.end()), fb(b.begin(), b.end());
@@ -36,10 +38,10 @@ vector<int> multiply(vector<int> a, vector<int> b) {
 	for (i = 0; i < n; i++) fa[i] *= fb[i];
 	fft(fa, 1);
 	res.resize(n);
-	for (i = 0; i < n; i++)
-		res[i] = (int)(fa[i].real() + 0.5);
+	for (i = 0; i < n; i++) res[i] = (int)(fa[i].real() + 0.5);
 	return res;
 }
+
 vector<int> vt;
 vector<int> vt1;
 int ww[100000];
