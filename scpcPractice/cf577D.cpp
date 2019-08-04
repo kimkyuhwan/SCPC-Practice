@@ -87,7 +87,7 @@ int main() {
 		right = cc[0];
 	}
 	for (; i < cnt; i++) {
-		dp[i][LL] = min(dp[i - 1][LR], dp[i - 1][RR]) + abs(mmap[vy[i-1]].back()-lrLine[i-1][RIGHT]) + sel[i][LL];
+		dp[i][LL] = min(dp[i - 1][LR], dp[i - 1][RR]) + abs(mmap[vy[i - 1]].back() - lrLine[i - 1][RIGHT]) + sel[i][LL];
 		dp[i][LR] = min(dp[i - 1][LR], dp[i - 1][RR]) + abs(mmap[vy[i - 1]].back() - lrLine[i - 1][RIGHT]) + sel[i][LR];
 		dp[i][RL] = min(dp[i - 1][LL], dp[i - 1][RL]) + abs(mmap[vy[i - 1]].front() - lrLine[i - 1][LEFT]) + sel[i][RL];
 		dp[i][RR] = min(dp[i - 1][LL], dp[i - 1][RL]) + abs(mmap[vy[i - 1]].front() - lrLine[i - 1][LEFT]) + sel[i][RR];
